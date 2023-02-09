@@ -89,7 +89,7 @@ def main(args):
     my_BEV_model = BEV_Unet(n_class=len(unique_label), n_height=compression_model, input_batch_norm=True, dropout=0.5,
                             circular_padding=circular_padding)
     my_model = ptBEVnet(my_BEV_model, pt_model='pointnet', grid_size=grid_size, fea_dim=fea_dim, max_pt_per_encode=256,
-                        out_pt_fea_dim=512, kernal_size=1, pt_selection='random', fea_compre=compression_model)
+                        out_pt_fea_dim=512, kernel_size=1, pt_selection='random', fea_compre=compression_model)
     if os.path.exists(model_save_path):
         my_model.load_state_dict(torch.load(model_save_path))
     my_model.to(pytorch_device)
