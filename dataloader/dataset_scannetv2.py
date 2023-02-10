@@ -250,28 +250,12 @@ class ScannetDataset(Dataset):
         # print(path)
         data = read_ply(path)
         points = np.vstack((data['x'], data['y'], data['z'])).T
-        num_points = points.shape[0]
-        colors = np.vstack((data['red'], data['green'], data['blue'])).T
-
         gt_labels = data['class'].astype(np.int32)
 
-        points_all = np.zeros((num_points, 9))
-        points_all[:, 0:3] = points
-        points_all[:, 3:6] = colors
-        points_all[:, 6:9] = pc_normalize(points)
-        gt_labels_set_temp = np.array([self.label_to_idx[i] for i in gt_labels])
-        cloud_labels_idx = np.unique(gt_labels_set_temp)
-        cloud_labels_idx = cloud_labels_idx[cloud_labels_idx != 0].astype(np.int32)
-
-        cloud_labels = np.zeros((1, 20))
-        cloud_labels[0][cloud_labels_idx - 1] = 1
-        cloud_labels_all = np.ones((points_all.shape[0], 20))
-        cloud_labels_all = cloud_labels_all * cloud_labels
-
-        data = points_all
-        file_name = path.split('/')
-        file_name = file_name[-1].split('.')[0]
-        return (data.astype(np.float32), cloud_labels_all.astype(np.int32), gt_labels.astype(np.int32), file_name)
+        data_tuple = (points, gt_labels)
+        if self.return_ref:
+            data_tuple += (points,)
+        return data_tuple
 
     def __len__(self):
         return len(self.files)

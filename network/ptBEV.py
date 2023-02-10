@@ -168,7 +168,7 @@ def parallel_FPS(np_cat_fea, K):
     return nb_greedy_FPS(np_cat_fea, K)
 
 
-@nb.jit('b1[:](f4[:,:],i4)', nopython=True, cache=True)
+# @nb.jit('b1[:](f4[:,:],i4)', nopython=True, cache=True)
 def nb_greedy_FPS(xyz, K):
     start_element = 0
     sample_num = xyz.shape[0]

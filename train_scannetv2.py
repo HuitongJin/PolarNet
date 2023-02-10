@@ -99,14 +99,11 @@ def main(args):
     """ prepare dataset """
     train_pt_dataset = ScannetDataset(data_path, split='train', return_ref=True)
     val_pt_dataset = ScannetDataset(data_path, split='val', return_ref=True)
-    if model == 'polar':
-        train_dataset = spherical_dataset(train_pt_dataset, grid_size=grid_size, flip_aug=True, ignore_label=0,
-                                          rotate_aug=True, fixed_volume_space=True)
-        val_dataset = spherical_dataset(val_pt_dataset, grid_size=grid_size, ignore_label=0, fixed_volume_space=True)
-    elif model == 'traditional':
-        train_dataset = voxel_dataset(train_pt_dataset, grid_size=grid_size, flip_aug=True, ignore_label=0,
-                                      rotate_aug=True, fixed_volume_space=True)
-        val_dataset = voxel_dataset(val_pt_dataset, grid_size=grid_size, ignore_label=0, fixed_volume_space=True)
+
+    train_dataset = spherical_dataset(train_pt_dataset, grid_size=grid_size, flip_aug=True, ignore_label=0,
+                                        rotate_aug=True, fixed_volume_space=True)
+    val_dataset = spherical_dataset(val_pt_dataset, grid_size=grid_size, ignore_label=0, fixed_volume_space=True)
+
     train_dataset_loader = torch.utils.data.DataLoader(dataset=train_dataset,
                                                        batch_size=train_batch_size,
                                                        collate_fn=collate_fn_BEV,
@@ -208,7 +205,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='')
     parser.add_argument('-d', '--data_dir', default='/data/dataset/scannet')
     parser.add_argument('-g', '--device', default='4')
-    parser.add_argument('-p', '--model_save_path', default='./SemKITTI_PolarSeg.pt')
+    parser.add_argument('-p', '--model_save_path', default='./Scannet_PolarSeg.pt')
     parser.add_argument('-m', '--model', choices=['polar', 'traditional'], default='polar',
                         help='training model: polar or traditional (default: polar)')
     parser.add_argument('-s', '--grid_size', nargs='+', type=int, default=[480, 360, 32],
