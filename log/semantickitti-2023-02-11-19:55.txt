@@ -1,0 +1,2 @@
+train_SemanticKITTI.py
+Namespace(check_iter=4000, data_dir='/data/dataset/SemanticKitti/dataset', device='3', grid_size=[480, 360, 32], model='polar', model_save_path='./SemKITTI_PolarSeg.pt', save_log_dir='/data/jinhuitong/Code/PolarNet/log/', train_batch_size=2, val_batch_size=2)

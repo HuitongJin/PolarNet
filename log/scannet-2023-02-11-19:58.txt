@@ -1,0 +1,30 @@
+train_scannetv2.py
+Namespace(check_iter=4000, data_dir='/data/dataset/scannet', device='4', grid_size=[480, 360, 32], model='polar', model_save_path='./Scannet_PolarSeg2.pt', save_log_dir='/data/jinhuitong/Code/PolarNet/log/', train_batch_size=2, val_batch_size=2)
+Validation per class iou: 
+unclassified : 0.00%
+wall : 0.00%
+floor : 1.67%
+cabinet : 0.00%
+bed : 0.69%
+chair : 1.17%
+sofa : 0.06%
+table : 5.76%
+door : 0.42%
+window : 0.00%
+bookshelf : 0.00%
+picture : 0.00%
+counter : 0.00%
+desk : 0.10%
+curtain : 0.00%
+refridgerator : 0.00%
+shower curtain : 0.00%
+toilet : 0.00%
+sink : 0.33%
+bathtub : 0.47%
+otherfurniture : 0.00%
+Current val miou is 0.508 while the best val miou is 0.508
+Current val loss is 4.019
+epoch 0 iter     0, loss: nan
+
+0 exceptions encountered during last training
+

@@ -17,6 +17,7 @@ import numpy as np
 import torch
 import torch.optim as optim
 from tqdm import tqdm
+from datetime import datetime
 
 from network.BEV_Unet import BEV_Unet
 from network.ptBEV import ptBEVnet
@@ -59,6 +60,37 @@ def SemKITTI2train(label):
         return [SemKITTI2train_single(a) for a in label]
     else:
         return SemKITTI2train_single(label)
+
+
+class Logger():
+    def __init__(self, filename):
+        self.name = filename
+        self.file = open(filename, "w+", encoding='utf-8')
+        self.alive = True
+        self.stdout = sys.stdout
+        sys.stdout = self
+
+    def __enter__(self):
+        pass
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
+
+    def __del__(self):
+        self.close()
+
+    def close(self):
+        if self.alive:
+            sys.stdout = self.stdout
+            self.file.close()
+            self.alive = False
+
+    def write(self, data):
+        self.file.write(data)
+        self.stdout.write(data)
+
+    def flush(self):
+        self.file.flush()
 
 
 # ==============
@@ -122,7 +154,7 @@ def main(args):
     """ TRAINING """
     epoch = 0
     best_val_miou = 0
-    start_training = False
+    start_training = True
     my_model.train()
     global_iter = 0
     exce_counter = 0
@@ -202,13 +234,21 @@ def main(args):
                 if exce_counter == 0:
                     print(error)
                 exce_counter += 1
+            
+             # zero the parameter gradients
+            optimizer.zero_grad()
+            pbar.update(1)
+            start_training=True
+            global_iter += 1
+        pbar.close()
+        epoch += 1
 
 
 if __name__ == '__main__':
     # Training settings
     parser = argparse.ArgumentParser(description='')
     parser.add_argument('-d', '--data_dir', default='/data/dataset/SemanticKitti/dataset')
-    parser.add_argument('-g', '--device', default='4')
+    parser.add_argument('-g', '--device', default='3')
     parser.add_argument('-p', '--model_save_path', default='./SemKITTI_PolarSeg.pt')
     parser.add_argument('-m', '--model', choices=['polar', 'traditional'], default='polar',
                         help='training model: polar or traditional (default: polar)')
@@ -217,11 +257,15 @@ if __name__ == '__main__':
     parser.add_argument('--train_batch_size', type=int, default=2, help='batch size for training (default: 2)')
     parser.add_argument('--val_batch_size', type=int, default=2, help='batch size for validation (default: 2)')
     parser.add_argument('--check_iter', type=int, default=4000, help='validation interval (default: 4000)')
+    parser.add_argument('--save_log_dir', default='/data/jinhuitong/Code/PolarNet/log/')
 
     args = parser.parse_args()
     if not len(args.grid_size) == 3:
         raise Exception('Invalid grid size! Grid size should have 3 dimensions.')
 
-    print(' '.join(sys.argv))
-    print(args)
-    main(args)
+    save_log_path = args.save_log_dir + "semantickitti-" + datetime.now().strftime("%Y-%m-%d-%H:%M") + ".txt"
+
+    with Logger(save_log_path):
+        print(' '.join(sys.argv))
+        print(args)
+        main(args)

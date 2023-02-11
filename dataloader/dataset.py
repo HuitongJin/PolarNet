@@ -39,7 +39,7 @@ def polar2cat(input_xyz_polar):
     return np.stack((x, y, input_xyz_polar[2]), axis=0)
 
 
-@nb.jit('u1[:,:,:](u1[:,:,:],i8[:,:])', nopython=True, cache=True, parallel=False)
+# @nb.jit('u1[:,:,:](u1[:,:,:],i8[:,:])', nopython=True, cache=True, parallel=False)
 def nb_process_label(processed_label, sorted_label_voxel_pair):
     label_size = 256
     counter = np.zeros((label_size,), dtype=np.uint16)
@@ -319,6 +319,9 @@ class spherical_dataset(data.Dataset):
         if len(data) == 2:
             return_fea = return_xyz
         elif len(data) == 3:
+            # print(return_xyz.shape)
+            # print(sig.shape)
+            # print(sig[..., np.newaxis].shape)
             return_fea = np.concatenate((return_xyz, sig[..., np.newaxis]), axis=1)
 
         if self.return_test:
